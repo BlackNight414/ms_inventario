@@ -1,0 +1,1 @@
+from .inventario_service import InventarioService
