@@ -19,8 +19,8 @@ def create_app():
     migrate.init_app(app, db)
     # ma.init_app(app)
     
-    # from app.resources import pagos
-    # app.register_blueprint(pagos, url_prefix='/pagos')
+    from app.resources import inventario
+    app.register_blueprint(inventario, url_prefix='/inventario')
     
     @app.shell_context_processor    
     def ctx():

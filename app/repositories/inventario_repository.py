@@ -8,3 +8,6 @@ class InventarioRepository:
         db.session.add(stock)
         db.session.commit()
         return stock
+    
+    def get_by_product_id(self, producto_id: int):
+        return db.session.query(Stock).filter(Stock.producto_id == producto_id).all()
