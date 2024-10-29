@@ -1,5 +1,5 @@
 from flask import Flask
-# from flask_marshmallow import Marshmallow
+from flask_marshmallow import Marshmallow
 import os
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -7,7 +7,7 @@ from app.config import config
 
 db = SQLAlchemy()
 migrate = Migrate()
-# ma = Marshmallow()
+ma = Marshmallow()
 
 def create_app():
     app_context = os.getenv('FLASK_CONTEXT')
@@ -17,7 +17,7 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db)
-    # ma.init_app(app)
+    ma.init_app(app)
     
     from app.resources import inventario
     app.register_blueprint(inventario, url_prefix='/inventario')

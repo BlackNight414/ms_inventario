@@ -1,9 +1,11 @@
 from flask import Blueprint, jsonify, request
 from app.services import InventarioService
 from app.models import Stock
+from app.mapping import StockSchema
 
 inventario = Blueprint('inventario', __name__)
 inventario_service = InventarioService()
+stock_schema = StockSchema()
 
 @inventario.route('/calcular_stock/<int:producto_id>', methods=['GET'])
 def calcular_stock(producto_id):
@@ -22,15 +24,8 @@ def ingresar_producto():
     stock_data = request.get_json()
 
     try:
-        stock = inventario_service.ingresar_producto(Stock(**stock_data))
-        resp = jsonify({
-            'id': stock.id,
-            'producto_id': stock.producto_id,
-            'fecha_transaccion': stock.fecha_transaccion,
-            'cantidad': stock.cantidad,
-            'entrada_salida': stock.entrada_salida
-        })
-        return resp, 200
+        stock = inventario_service.ingresar_producto(stock_schema.load(stock_data))
+        return stock_schema.dump(), 200
     except BaseException as e:
         print(e)
         return jsonify({'msg': 'Error'}), 500
@@ -41,14 +36,8 @@ def egresar_producto():
     stock_data = request.get_json()
 
     try:
-        stock = inventario_service.egresar_producto(Stock(**stock_data))
-        resp = jsonify({
-            'id': stock.id,
-            'producto_id': stock.producto_id,
-            'fecha_transaccion': stock.fecha_transaccion,
-            'cantidad': stock.cantidad,
-            'entrada_salida': stock.entrada_salida
-        })
-        return resp, 200
+        stock = inventario_service.egresar_producto(stock_schema.load(stock_data))
+        return stock_schema.dump(stock), 200
     except BaseException as e:
+        print(e)
         return jsonify({'msg': 'Error'}), 500
