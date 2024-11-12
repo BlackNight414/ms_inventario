@@ -10,7 +10,7 @@ stock_schema = StockSchema()
 @inventario.route('/calcular_stock/<int:producto_id>', methods=['GET'])
 def calcular_stock(producto_id):
     try:
-        stock = inventario_service.calcular_stock(producto_id)
+        stock = inventario_service.obtener_stock(producto_id)
         resp = jsonify({
             'stock': stock
         })
