@@ -26,4 +26,12 @@ def create_app():
     def ctx():
         return {"app": app}
     
+    import logging
+    logging.basicConfig(
+        level=logging.INFO, 
+        format="{asctime} - {levelname} - {message}", # formato de mensaje log
+        style="{",
+        datefmt="%Y-%m-%d %H:%M", # formato de tiempo
+        ) 
+
     return app

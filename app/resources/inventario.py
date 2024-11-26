@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from app.services import InventarioService
 from app.models import Stock
 from app.mapping import StockSchema
+import logging
 
 inventario = Blueprint('inventario', __name__)
 inventario_service = InventarioService()
@@ -9,6 +10,7 @@ stock_schema = StockSchema()
 
 @inventario.route('/calcular_stock/<int:producto_id>', methods=['GET'])
 def calcular_stock(producto_id):
+    logging.info(f'Se ha consultado stock del producto id={producto_id}')
     try:
         stock = inventario_service.obtener_stock(producto_id)
         resp = jsonify({
@@ -16,7 +18,7 @@ def calcular_stock(producto_id):
         })
         return resp, 200
     except BaseException as e:
-        print(e)
+        logging.error(e)
         return jsonify({'msg': 'Error'}), 500
 
 @inventario.route('/ingresar_producto', methods=['POST'])
@@ -25,9 +27,10 @@ def ingresar_producto():
 
     try:
         stock = inventario_service.ingresar_producto(stock_schema.load(stock_data))
-        return stock_schema.dump(), 200
+        logging.info(f'Stock ingresado del producto id={stock.producto_id} - Cantidad: {stock.cantidad}')
+        return stock_schema.dump(stock), 200
     except BaseException as e:
-        print(e)
+        logging.error(e)
         return jsonify({'msg': 'Error'}), 500
 
 
@@ -37,7 +40,8 @@ def egresar_producto():
 
     try:
         stock = inventario_service.egresar_producto(stock_schema.load(stock_data))
+        logging.info(f'Stock retirado del producto id={stock.producto_id} - Cantidad: {stock.cantidad}')
         return stock_schema.dump(stock), 200
     except BaseException as e:
-        print(e)
+        logging.error(e)
         return jsonify({'msg': 'Error'}), 500
