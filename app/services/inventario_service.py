@@ -1,5 +1,8 @@
 from app.repositories import InventarioRepository
 from app.models import Stock
+from threading import Lock
+
+locker = Lock() # Para controlar concurrencia entre hilos
 
 class InventarioService:
 
@@ -13,8 +16,14 @@ class InventarioService:
 
     def egresar_producto(self, stock: Stock):
         """ Registra stock de salida """
-        stock.entrada_salida = -1
-        return self.inventario_respository.add(stock)
+        locker.acquire() # pedimos el token
+        # Verificamos stock
+        result = None
+        if self.obtener_stock(stock.producto_id) >= stock.cantidad:
+            stock.entrada_salida = -1
+            result = self.inventario_respository.add(stock)
+        locker.release() # liberamos token
+        return result
     
     def get_by_product_id(self, producto_id: int):
         """ Devuelve lista de registros de inventario de un producto en base a su id. """
