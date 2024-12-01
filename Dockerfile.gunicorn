@@ -27,5 +27,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install gevent==24.10.3 gunicorn==23.0.0
 
 EXPOSE 5004
-CMD ["gunicorn", "--workers", "2", "--threads", "8","--log-level", "INFO", "--bind", "0.0.0.0:5004", "app:create_app()"]
+CMD ["gunicorn", "--workers", "4", "--threads", "16", "--preload","--log-level", "INFO", "--bind", "0.0.0.0:5004", "app:create_app()"]
 #CMD [ "python", "./app.py" ]

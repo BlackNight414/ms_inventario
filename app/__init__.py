@@ -40,7 +40,7 @@ def create_app():
     
     import logging
     logging.basicConfig(
-        level=logging.INFO, 
+        level=logging.DEBUG, 
         format="{asctime} - {levelname} - {message}", # formato de mensaje log
         style="{",
         datefmt="%Y-%m-%d %H:%M", # formato de tiempo

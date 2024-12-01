@@ -1,9 +1,13 @@
 from app.repositories import InventarioRepository
 from app.models import Stock
 from app import cache
-from threading import Lock
+from threading import Lock, current_thread
+from multiprocessing import Lock as w_lock
+import logging
+import os
 
 locker = Lock() # Para controlar concurrencia entre hilos
+worker_lock = w_lock() # Para controlar concurrencia entre workers
 
 class InventarioService:
 
@@ -24,7 +28,10 @@ class InventarioService:
 
     def egresar_producto(self, stock: Stock):
         """ Registra stock de salida """
-        locker.acquire() # pedimos el token
+        logging.debug(f'Worker PID: {os.getpid()} - Pidiendo worker-lock')
+        worker_lock.acquire() # worker pide token
+        logging.debug(f'Thread {current_thread().name} del Worker PID: {os.getpid()} - Pidiendo lock')
+        locker.acquire() # thread pide token
         # Verificamos stock
         result = None
         if self.obtener_stock(stock.producto_id) >= stock.cantidad:
@@ -36,7 +43,10 @@ class InventarioService:
             if stock_cache is not None:
                 cache.set(f'stock_producto_id_{stock.producto_id}', stock_cache-stock.cantidad, timeout=30)
 
-        locker.release() # liberamos token
+        logging.debug(f'Thread {current_thread().name} del Worker PID: {os.getpid()} - Liberando lock')
+        locker.release() # thread libera token
+        logging.debug(f'Worker PID: {os.getpid()} - Liberando worker-lock')
+        worker_lock.release() # worker libera token
         return result
     
     def get_by_product_id(self, producto_id: int):
