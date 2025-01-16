@@ -14,4 +14,5 @@ class Stock(db.Model):
     # Restricción adicional para el campo entrada_salida
     __table_args__ = (
         db.CheckConstraint('entrada_salida = 1 OR entrada_saida = -1'),
+        db.Index('indice_inventario_producto', 'producto_id')
     )
