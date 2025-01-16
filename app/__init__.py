@@ -45,5 +45,8 @@ def create_app():
         style="{",
         datefmt="%Y-%m-%d %H:%M", # formato de tiempo
         ) 
+    
+    # Seteamos una llave para retirar, con un tiempo infinito (timeout=0)
+    cache.set('acceso_retiro_producto', True, timeout=0)
 
     return app

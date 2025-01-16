@@ -39,17 +39,17 @@ def egresar_producto():
     stock_data = request.get_json()
 
     try:
-        stock = inventario_service.egresar_producto(stock_schema.load(stock_data))
-        if stock:
-            logging.info(f'Stock retirado del producto id={stock.producto_id} - Cantidad: {stock.cantidad}')
-            logging.info(f'Fecha transaccion: {stock.fecha_transaccion}')
-            resp = stock_schema.dump(stock)
+        result = inventario_service.egresar_producto(stock_schema.load(stock_data))
+        if isinstance(result, Stock):
+            logging.info(f'Stock retirado del producto id={result.producto_id} - Cantidad: {result.cantidad}')
+            logging.info(f'Fecha transaccion: {result.fecha_transaccion}')
+            resp = stock_schema.dump(result), 200
         else:
-            logging.warning(f"Retiro stock de producto id={stock_data['producto_id']} rechazado: Insuficiente stock.")
+            logging.warning(f"Retiro stock de producto id={stock_data['producto_id']} rechazado: {result}")
             resp = jsonify({
-                'status': 'Not stock',
-                'msg': f"Retiro stock de producto id={stock_data['producto_id']} rechazado: Insuficiente stock."})
-        return resp, 200
+                'status': 'Failed',
+                'msg': f"Retiro stock de producto id={stock_data['producto_id']} rechazado: {result}"}), 423
+        return resp
     except BaseException as e:
         logging.error(e)
         return jsonify({'msg': 'Error'}), 500
