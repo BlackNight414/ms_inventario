@@ -47,6 +47,6 @@ def create_app():
         ) 
     
     # Seteamos una llave para retirar, con un tiempo infinito (timeout=0)
-    cache.set('acceso_retiro_producto', True, timeout=0)
+    # cache.set('token_retiro_producto', True, timeout=0)
 
     return app

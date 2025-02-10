@@ -41,7 +41,7 @@ class InventarioService:
         for i in range(N_INTENTOS):
             #time.sleep(random.randint(1,5)/100) # tiempo de espera entre intentos 
             #acceso = cache.delete(f'acceso_retiro_producto_id_{stock.producto_id}')
-            acceso = cache.delete('acceso_retiro_producto')
+            acceso = cache.add(f'token_retiro_producto_id_{stock.producto_id}', True, timeout=0)
             if acceso: # Si se consiguió consumir la llave
                 break  
 
@@ -61,7 +61,8 @@ class InventarioService:
                     cache.set(f'stock_producto_id_{stock.producto_id}', stock_cache-stock.cantidad, timeout=30)
 
             # Liberamos token (volvemos a setear la llave)
-            cache.set('acceso_retiro_producto', True, timeout=0)
+            # cache.set('acceso_retiro_producto', True, timeout=0)
+            cache.delete(f'token_retiro_producto_id_{stock.producto_id}') # Liberamos (borramos) la llave
         else:
             result = 'No se pudo acceder al proceso de retiro'
 
