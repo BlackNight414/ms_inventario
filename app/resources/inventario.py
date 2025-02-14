@@ -48,7 +48,7 @@ def egresar_producto():
             logging.warning(f"Retiro stock de producto id={stock_data['producto_id']} rechazado: {result}")
             resp = jsonify({
                 'status': 'Failed',
-                'msg': f"Retiro stock de producto id={stock_data['producto_id']} rechazado: {result}"}), 423
+                'msg': f"Retiro stock de producto id={stock_data['producto_id']} rechazado: {result}"}), 422
         return resp
     except BaseException as e:
         logging.error(e)

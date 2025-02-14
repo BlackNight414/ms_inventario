@@ -37,7 +37,7 @@ class InventarioService:
 
         # =====
         
-        N_INTENTOS = 10
+        N_INTENTOS = 80
         for i in range(N_INTENTOS):
             #time.sleep(random.randint(1,5)/100) # tiempo de espera entre intentos 
             #acceso = cache.delete(f'acceso_retiro_producto_id_{stock.producto_id}')
