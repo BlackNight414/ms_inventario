@@ -14,6 +14,7 @@ class InventarioRepository:
         return db.session.query(Stock).filter(Stock.producto_id == producto_id).all()
     
     def get_product_stock(self, producto_id: int):
-        return db.session.query(
+        stock = db.session.query(
             func.sum(Stock.cantidad * Stock.entrada_salida)) \
             .filter(Stock.producto_id == producto_id).scalar()
+        return stock if stock is not None else 0 # Será None para cuando no hay registros de stock
